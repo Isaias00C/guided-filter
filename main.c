@@ -21,7 +21,7 @@ void printMat2(unsigned char* mat, int rows, int cols);
 void printMat(float* mat, int rows, int cols);
 void guidedFilter(float* guidance, float * src,float * dest,int radius,float eps, int rows, int cols);
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   int rows, cols, radius;
   float eps;

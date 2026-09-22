@@ -9,6 +9,7 @@
 #define max(x,y) ((x) < (y) ? (y) : (x))
 //typedef double element;
 
+void calculatecumsum(unsigned char *image, int rows, int cols, int **cumsumim);
 
 //   2D MEAN FILTER implementation
 //     image  - input image
@@ -203,58 +204,3 @@ void calculatecumsum(unsigned char *image, int rows, int cols,
 	}
 }
 
-
-void guidedfilter(unsigned char *srcimg, unsigned char *guideimg, float *result, int radius, float eps)
-{
-  int i,j;
-  float N,mean_I, mean_Ip, cov_Ip, mean_II, var_I, a, b, mean_a, mean_b;
-   
- //the size of each local patch; N=(2r+1)^2 except for boundary pixels
-[hei, wid] = size(I);
-  center = (*windowsize) / 2;
-N = boxfilter(ones(hei, wid), r); //the size of each local patch; N=(2r+1)^2 except for boundary pixels.
-
-mean_I = boxfilter(I, r) ./ N;
-mean_p = boxfilter(p, r) ./ N;
-mean_Ip = boxfilter(I.*p, r) ./ N;
-cov_Ip = mean_Ip - mean_I .* mean_p; //this is the covariance of (I, p) in each local patch.
-
-mean_II = boxfilter(I.*I, r) ./ N;
-var_I = mean_II - mean_I .* mean_I;
-
-
-// calculating the linear coefficients a and b
-a = cov_Ip ./ (var_I + eps); // Eqn. (5) in the paper;
-b = mean_p - a .* mean_I; // Eqn. (6) in the paper;
-
-mean_a = boxfilter(a, r) ./ N;
-mean_b = boxfilter(b, r) ./ N;
-
-q = mean_a .* I + mean_b; // Eqn. (8) in the paper;
-
-
-
-  gaussian_smooth(img, rows, cols, &smoothedim);
-  derrivative_x_y(smoothedim, rows, cols, &delta_x, &delta_y);
-  free(smoothedim);
-  magnitude_x_y(delta_x, delta_y, rows, cols, edge_mag);
-  free(delta_x);
-  free(delta_y);
-  
-  max_mag = -99999;
-  min_mag = 99999;
-  for (j=0; j<rows; j++)   
-    for (i=0; i<cols; i++) {
-      if (edge_mag[j*cols+i] > max_mag)
-	max_mag = edge_mag[j*cols+i];
-      if (edge_mag[j*cols+i] < min_mag)
-	min_mag = edge_mag[j*cols+i];
-    }
-
-
-  for (j=0; j<rows; j++)   
-    for (i=0; i<cols; i++)
-      edge_mag[j*cols+i] = 255*(edge_mag[j*cols+i]-min_mag)/
-	                       (max_mag-min_mag);
- 
-}
