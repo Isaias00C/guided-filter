@@ -13,26 +13,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "common.h"
 
 
-void ReadPGM(FILE* , unsigned char** , int* , int* );
+void ReadPGM(FILE* , unsigned char* , int* , int* );
 void WritePGM(int, int, unsigned char *, unsigned char *, FILE*);
 void printMat2(unsigned char* mat, int rows, int cols);
 void printMat(float* mat, int rows, int cols);
 void guidedFilter(float* guidance, float * src,float * dest,int radius,float eps, int rows, int cols);
 
+static unsigned char image1[MAX_PIXELS];
+static unsigned char image2[MAX_PIXELS];
+static unsigned char output[MAX_PIXELS];
+static float fimage1[MAX_PIXELS];
+static float fimage2[MAX_PIXELS];
+static float filtered_image[MAX_PIXELS];
+
 int main(int argc, char *argv[])
 {
   int rows, cols, radius;
   float eps;
-  unsigned char *image1;
-  unsigned char *image2;
-  unsigned char *output;
-
-  float *fimage1;
-  float *fimage2;
-  float *distance;
-  float *filtered_image;
 
   FILE * fp;
   int i,j;
@@ -54,14 +54,14 @@ int main(int argc, char *argv[])
     printf("reading error...\n");
     exit(0); 
   }
-  ReadPGM(fp,&image1,&rows,&cols);
+  ReadPGM(fp,image1,&rows,&cols);
   //printMat2(image1,rows,cols);
-  
+
   if ((fp=fopen(argv[2], "rb"))==NULL){
     printf("reading error...\n");
-    exit(0); 
+    exit(0);
   }
-  ReadPGM(fp,&image2,&rows,&cols);
+  ReadPGM(fp,image2,&rows,&cols);
 
   if (argv[3]==NULL){
     printf("Please enter the local window radius...\n");
@@ -75,28 +75,24 @@ int main(int argc, char *argv[])
 
   /* you may replace your own applications here */
 
-  fimage1 = (float*)malloc(sizeof(float)*rows*cols);
-  for (j=0; j<rows; j++) {  
+  for (j=0; j<rows; j++) {
     for (i=0; i<cols; i++){
 		fimage1[j*cols+i] = (float)image1[j*cols+i]/255;
 	}
   }
 
-  fimage2 = (float*)malloc(sizeof(float)*rows*cols);
-  for (j=0; j<rows; j++) {  
+  for (j=0; j<rows; j++) {
     for (i=0; i<cols; i++){
 		fimage2[j*cols+i] = (float)image2[j*cols+i]/255;
 	}
   }
-  filtered_image = (float*)malloc(sizeof(float)*rows*cols);
   printf("begin calculting filtered_output.... \n");
   guidedFilter(fimage1, fimage2, filtered_image, radius, eps, rows, cols);
   //printf("\nPrinting result\n");
   //printMat(filtered_image,rows,cols);
   /* end of your application */
 
-  output = (unsigned char*)malloc(sizeof(unsigned char)*rows*cols);
-  for (j=0; j<rows; j++){   
+  for (j=0; j<rows; j++){
     for (i=0; i<cols; i++){
 		output[j*cols+i] = (unsigned char)255*filtered_image[j*cols+i];
 	}
@@ -112,10 +108,6 @@ int main(int argc, char *argv[])
   }
   printf("Writing PGM....\n");
   WritePGM(rows, cols, image2, output, fp);
-
- printf("\nFreeing memory\n");
- free(filtered_image);
- free(output);
 }
 
 
