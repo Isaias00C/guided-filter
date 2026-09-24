@@ -94,7 +94,14 @@ int main(int argc, char *argv[])
 
   for (j=0; j<rows; j++){
     for (i=0; i<cols; i++){
+		/* como era antes:
 		output[j*cols+i] = (unsigned char)255*filtered_image[j*cols+i];
+		*/
+
+		/* como ficou agora: */
+		float v = filtered_image[j*cols + i] * 255.0f;
+        v = fminf(255.0f, fmaxf(0.0f, v));      /* clamp */
+        output[j*cols + i] = (unsigned char)lrintf(v);  /* arredonda */
 	}
   }
   //printf("\nPrinting result\n");

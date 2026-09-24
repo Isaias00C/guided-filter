@@ -7,8 +7,7 @@ Implementação em C do algoritmo *Guided Image Filter* (He, Sun, Tang — ECCV 
 | Arquivo | Descrição |
 |---|---|
 | [main.c](main.c) | Ponto de entrada: lê os argumentos, carrega as imagens PGM e chama o filtro |
-| [filter.c](filter.c) | Implementação do `guidedFilter` |
-| [box_filter.c](box_filter.c) | Box filter (soma de área local) usado internamente pelo guided filter |
+| [filter.c](filter.c) | Implementação do `guidedFilter`, incluindo o box filter (soma de área local) usado internamente |
 | [inout.c](inout.c) | Leitura/escrita de arquivos PGM (`ReadPGM` / `WritePGM`) |
 | [images/](images/) | Imagens de exemplo (ex.: `cat.pgm`) |
 
@@ -22,7 +21,7 @@ Implementação em C do algoritmo *Guided Image Filter* (He, Sun, Tang — ECCV 
 Não há Makefile no projeto; compile diretamente com `gcc`:
 
 ```bash
-gcc -O2 -Wall main.c filter.c box_filter.c inout.c -lm -o guided_filter
+gcc -O2 -Wall main.c filter.c inout.c -lm -o guided_filter
 ```
 
 Isso gera o executável `guided_filter` na raiz do projeto.
