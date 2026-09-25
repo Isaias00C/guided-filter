@@ -94,14 +94,11 @@ int main(int argc, char *argv[])
 
   for (j=0; j<rows; j++){
     for (i=0; i<cols; i++){
-		/* como era antes:
-		output[j*cols+i] = (unsigned char)255*filtered_image[j*cols+i];
-		*/
-
-		/* como ficou agora: */
+		/* trunca em vez de arredondar, para bater com o cast do numpy
+		   (.astype(np.uint8)) usado na referencia em Python */
 		float v = filtered_image[j*cols + i] * 255.0f;
         v = fminf(255.0f, fmaxf(0.0f, v));      /* clamp */
-        output[j*cols + i] = (unsigned char)lrintf(v);  /* arredonda */
+        output[j*cols + i] = (unsigned char)v;  /* trunca */
 	}
   }
   //printf("\nPrinting result\n");
