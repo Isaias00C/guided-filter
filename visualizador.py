@@ -15,7 +15,7 @@ eps = 0.01  # Exemplo de escala para imagens de 8 bits
 
 for i in range(1, QUANTIDADE_IMAGENS+1):
 
-    caminho_entrada = f"images/imagem{i:02d}.pgm"
+    caminho_entrada = f"images/imagem{i:02d}_ascii.pgm"
     caminho_saida = f"images_pgm_py_filtradas/resultado{i:02d}.pgm"
 
 
