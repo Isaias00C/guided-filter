@@ -37,8 +37,8 @@ void ReadPGM(FILE* fp, unsigned char *image, int *rows, int *cols)
      }
      printf("Width=%d, Height=%d \nMaximum=%d\n",xdim,ydim,maxraw);
 
-     if ((long)xdim*ydim > MAX_PIXELS) {
-       printf("image %dx%d exceeds MAX_PIXELS (%d), raise MAX_ROWS/MAX_COLS in common.h\n", xdim, ydim, MAX_PIXELS);
+     if (ydim > MAX_ROWS || xdim > MAX_COLS || (long)xdim*ydim > MAX_PIXELS) {
+       printf("image %dx%d exceeds MAX_ROWS/MAX_COLS/MAX_PIXELS (%d/%d/%d), raise them in common.h\n", xdim, ydim, MAX_ROWS, MAX_COLS, MAX_PIXELS);
        exit(0);
      }
 
@@ -60,8 +60,8 @@ void ReadPGM(FILE* fp, unsigned char *image, int *rows, int *cols)
      }
      printf("Width=%d, Height=%d \nMaximum=%d,\n",xdim,ydim,maxraw);
 
-     if ((long)xdim*ydim > MAX_PIXELS) {
-       printf("image %dx%d exceeds MAX_PIXELS (%d), raise MAX_ROWS/MAX_COLS in common.h\n", xdim, ydim, MAX_PIXELS);
+     if (ydim > MAX_ROWS || xdim > MAX_COLS || (long)xdim*ydim > MAX_PIXELS) {
+       printf("image %dx%d exceeds MAX_ROWS/MAX_COLS/MAX_PIXELS (%d/%d/%d), raise them in common.h\n", xdim, ydim, MAX_ROWS, MAX_COLS, MAX_PIXELS);
        exit(0);
      }
 

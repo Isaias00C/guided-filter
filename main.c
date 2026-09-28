@@ -97,8 +97,10 @@ int main(int argc, char *argv[])
 		/* trunca em vez de arredondar, para bater com o cast do numpy
 		   (.astype(np.uint8)) usado na referencia em Python */
 		float v = filtered_image[j*cols + i] * 255.0f;
-        v = fminf(255.0f, fmaxf(0.0f, v));      /* clamp */
-        output[j*cols + i] = (unsigned char)v;  /* trunca */
+    v = fminf(255.0f, fmaxf(0.0f, v));      /* clamp */
+    float r = roundf(v);
+    if (fabs(v-r) < 1e-3f) v = r;
+    output[j*cols + i] = (unsigned char)v;  /* trunca */
 	}
   }
   //printf("\nPrinting result\n");

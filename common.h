@@ -6,10 +6,16 @@
    instead of being malloc'd/free'd at runtime. Raise them if you
    need to process larger images, but note that filter.c alone keeps
    close to 30 buffers of MAX_PIXELS floats alive, so RAM usage scales
-   fast (MAX_PIXELS * 4 bytes * ~30 buffers). Sized here with a margin
-   above images/imagem01.pgm (276x276). */
-#define MAX_ROWS   320
-#define MAX_COLS   320
+   fast (MAX_PIXELS * 4 bytes * ~30 buffers).
+
+   MAX_ROWS and MAX_COLS bound each dimension independently (e.g.
+   filter.c's boxfilter() sizes cumheightvector[MAX_COLS] and
+   cumheightvectorcol[MAX_ROWS] for the actual width/height, not just
+   the pixel total), so both must cover the largest width AND the
+   largest height across the images, including both portrait and
+   landscape orientations (e.g. 480x640 and 640x480 samples). */
+#define MAX_ROWS   640
+#define MAX_COLS   640
 #define MAX_PIXELS (MAX_ROWS * MAX_COLS)
 
 #endif

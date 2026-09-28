@@ -31,8 +31,8 @@ void guidedFilter(float * guidance, float * src,float * dest,int radius,float ep
   static float improduct[MAX_PIXELS];
   static float imsquareproduct[MAX_PIXELS];
 
-  if ((long)rows*cols > MAX_PIXELS) {
-    printf("guidedFilter: image %dx%d exceeds MAX_PIXELS (%d), raise MAX_ROWS/MAX_COLS in common.h\n", rows, cols, MAX_PIXELS);
+  if (rows > MAX_ROWS || cols > MAX_COLS || (long)rows*cols > MAX_PIXELS) {
+    printf("guidedFilter: image %dx%d exceeds MAX_ROWS/MAX_COLS/MAX_PIXELS (%d/%d/%d), raise them in common.h\n", rows, cols, MAX_ROWS, MAX_COLS, MAX_PIXELS);
     exit(0);
   }
 
