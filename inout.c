@@ -92,12 +92,13 @@ void WritePGM(int rows, int cols, unsigned char *image,
 
 
 
-  fprintf(fp, "P5\n%d %d\n%d\n", cols, rows, 255);
+  fprintf(fp, "P2\n%d %d\n%d\n", cols, rows, 255);
 
-  for (j=0; j<rows; j++)
-    for (i=0; i<cols; i++)
-      fputc(result[j*cols+i], fp);
-  	 // printf("%u",result);
-  fclose(fp);
+  for (j=0; j<rows; j++) {
+    for (i=0; i<cols; i++) {
+      fprintf(fp, "%u ", (unsigned int)result[j*cols+i]);
+    }
+    fprintf(fp, "\n");
+  }
 
 }
