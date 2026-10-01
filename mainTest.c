@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     FILE *fp;
     int rows, cols;
     int radius = 2;
-    float eps = 0.01f;
+    float eps = 0.04f;
 
     static uint8_t input[MAX_PIXELS];
     static uint8_t output[MAX_PIXELS];

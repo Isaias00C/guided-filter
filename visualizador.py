@@ -10,7 +10,7 @@ lista_imagens_filtradas = []
 
 # Parâmetros: raio do filtro (radius) e regularização (eps)
 radius = 2
-eps = 0.01  # Exemplo de escala para imagens de 8 bits
+eps = 0.04  # Exemplo de escala para imagens de 8 bits
 
 
 for i in range(1, QUANTIDADE_IMAGENS+1):
