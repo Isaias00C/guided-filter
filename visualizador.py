@@ -9,7 +9,7 @@ lista_imagens_filtradas = []
 
 
 # Parâmetros: raio do filtro (radius) e regularização (eps)
-radius = 4
+radius = 2
 eps = 0.01  # Exemplo de escala para imagens de 8 bits
 
 
@@ -30,11 +30,11 @@ for i in range(1, QUANTIDADE_IMAGENS+1):
 
     output_expected = (output_expected * 255).astype(np.uint8) # cast da saida de float para usigned char
 
-    cv2.imwrite(caminho_saida, output_expected)
 
+    cv2.imwrite(caminho_saida, output_expected)
     lista_imagens_filtradas.append(output_expected)
 
-for i in range(QUANTIDADE_IMAGENS):
+for i in range(2):
     fig, axes = plt.subplots(1, 2, figsize=(12, 4))  # Cria três painéis para apresentar as imagens de referência.
     axes[0].imshow(lista_imagens[i], cmap="gray", vmin=0, vmax=255)  # Exibe a imagem camera em tons de cinza.
     axes[0].set_title("camera — textura e contornos")  # Explica a característica principal da primeira imagem.
@@ -44,15 +44,15 @@ for i in range(QUANTIDADE_IMAGENS):
     axes[1].set_title("guided filter")  # Explica a característica principal da segunda imagem.
     axes[1].axis('off')
 
-    canny_50_100 = cv2.Canny(lista_imagens[i], 50, 100)  # Executa Canny com limiares mais baixos.
-    canny_50_100_2 = cv2.Canny(lista_imagens_filtradas[i], 50, 100)  # Executa Canny com limiares mais baixos.
+    canny_75_100 = cv2.Canny(lista_imagens[i], 75, 100)  # Executa Canny com limiares mais baixos.
+    canny_75_100_2 = cv2.Canny(lista_imagens_filtradas[i], 75, 100)  # Executa Canny com limiares mais baixos.
 
     fig, axes = plt.subplots(1, 2, figsize=(12, 4))  # Cria quatro painéis para comparar a influência dos limiares.
-    axes[0].imshow(canny_50_100, cmap="gray", vmin=0, vmax=255)  # Exibe a imagem camera em tons de cinza.
-    axes[0].set_title("canny_50_100_src")  # Explica a característica principal da primeira imagem.
+    axes[0].imshow(canny_75_100, cmap="gray", vmin=0, vmax=255)  # Exibe a imagem camera em tons de cinza.
+    axes[0].set_title("canny_75_100_src")  # Explica a característica principal da primeira imagem.
     axes[0].axis('off')
-    axes[1].imshow(canny_50_100_2, cmap="gray", vmin=0, vmax=255)  # Exibe a imagem em tons de cinza.
-    axes[1].set_title("canny_50_100_imagem_filtrada")  # Explica a característica principal da segunda imagem.
+    axes[1].imshow(canny_75_100_2, cmap="gray", vmin=0, vmax=255)  # Exibe a imagem em tons de cinza.
+    axes[1].set_title("canny_75_100_imagem_filtrada")  # Explica a característica principal da segunda imagem.
     axes[1].axis('off')
 
 

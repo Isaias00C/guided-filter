@@ -14,8 +14,8 @@
    the pixel total), so both must cover the largest width AND the
    largest height across the images, including both portrait and
    landscape orientations (e.g. 480x640 and 640x480 samples). */
-#define MAX_ROWS   640
-#define MAX_COLS   640
+#define MAX_ROWS   45
+#define MAX_COLS   45
 #define MAX_PIXELS (MAX_ROWS * MAX_COLS)
 
 #endif
