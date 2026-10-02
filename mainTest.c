@@ -16,7 +16,7 @@ void WritePGM(int rows, int cols,
 int guidedFilterSelf(const uint8_t *src,
                      uint8_t *dest,
                      int radius,
-                     float eps,
+                     double eps,
                      int rows,
                      int cols);
 
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     FILE *fp;
     int rows, cols;
     int radius = 2;
-    float eps = 0.04f;
+    double eps = 0.04f;
 
     static uint8_t input[MAX_PIXELS];
     static uint8_t output[MAX_PIXELS];
