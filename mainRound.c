@@ -1,7 +1,15 @@
+#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <windows.h>
+#include <string.h>
+#include <unistd.h>
+#include <limits.h>
+
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
+#define MAX_PATH PATH_MAX
 
 #include "common.h"
 
@@ -33,7 +41,7 @@ int main(int argc, char *argv[])
     char exePath[MAX_PATH];
     char outputPath[MAX_PATH];
     /* Uso:
-       programa.exe "C:\caminho\imagem.pgm"
+       ./programa imagem.pgm saida.pgm
     */
     if (argc != 3) {
         printf("Uso: %s <imagem_entrada.pgm> <imagem_saida.pgm>\n", argv[0]);
@@ -49,8 +57,8 @@ int main(int argc, char *argv[])
     }
 
     /* Lê PGM */
+    /* ReadPGM ja fecha o arquivo (fclose em inout.c) */
     ReadPGM(fp, input, &rows, &cols);
-    fclose(fp);
 
     /* Verifica tamanho */
     if (rows != 45 || cols != 45) {
@@ -75,11 +83,15 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    /* Descobre pasta do .exe */
-    GetModuleFileNameA(NULL, exePath, MAX_PATH);
+    /* Descobre pasta do executavel */
+    {
+        ssize_t n = readlink("/proc/self/exe", exePath, MAX_PATH - 1);
+        if (n < 0) n = 0;
+        exePath[n] = '\0';
+    }
 
     {
-        char *lastSlash = strrchr(exePath, '\\');
+        char *lastSlash = strrchr(exePath, '/');
 
         if (lastSlash != NULL)
             *(lastSlash + 1) = '\0';
@@ -87,7 +99,7 @@ int main(int argc, char *argv[])
             exePath[0] = '\0';
     }
 
-    /* Resultado será salvo ao lado do .exe */
+    /* Resultado será salvo ao lado do executavel */
     snprintf(outputPath, MAX_PATH, "%s%s", exePath, argv[2]);
 
     fp = fopen(outputPath, "wb");

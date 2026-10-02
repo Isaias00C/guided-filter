@@ -238,13 +238,13 @@ int guidedFilterSelf(const uint8_t *src,
 
 
             /*
-             * Conversão para uint8_t.
+             * Conversão para uint8_t com arredondamento.
              *
-             * Mantém a lógica de truncamento do
-             * seu main original.
+             * result já está saturado em [0,255], então
+             * result + 0.5 equivale a round(result).
              */
             dest[y * cols + x] =
-                (uint8_t)result;
+                (uint8_t)(result + 0.5);
         }
     }
 

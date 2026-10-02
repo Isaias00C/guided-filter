@@ -1,15 +1,19 @@
 #include <stdint.h>
 #include "common.h"
 
-static int clampInt(int value, int min, int max)
+static int reflectIndex(int index, int length)
 {
-    if (value < min)
-        return min;
+    if (length <= 1)
+        return 0;
 
-    if (value > max)
-        return max;
+    while (index < 0 || index >= length) {
+        if (index < 0)
+            index = -index - 1;
+        else
+            index = 2 * length - index - 1;
+    }
 
-    return value;
+    return index;
 }
 
 
@@ -22,7 +26,7 @@ int guidedFilterSelf(const uint8_t *src,
 {
     int y, x;
     int wy, wx;
-    int iy, ix;
+    int dy, dx;
 
     /*
      * Verificação das dimensões.
@@ -63,78 +67,46 @@ int guidedFilterSelf(const uint8_t *src,
 
 
             /*
-             * O Guided Filter calcula a média dos
-             * coeficientes das janelas que contêm
-             * o pixel atual (y,x).
+             * Cada janela tem tamanho fixo
+             * (2 * radius + 1) x (2 * radius + 1).
+             * Centros fora da imagem são refletidos,
+             * incluindo a repetição dos pixels de borda
+             * (equivalente a BORDER_REFLECT do OpenCV).
              */
-            int wy_start =
-                clampInt(y - radius, 0, rows - 1);
-
-            int wy_end =
-                clampInt(y + radius, 0, rows - 1);
-
-            int wx_start =
-                clampInt(x - radius, 0, cols - 1);
-
-            int wx_end =
-                clampInt(x + radius, 0, cols - 1);
-
-
-            /*
-             * Percorre as janelas que contêm o pixel.
-             */
-            for (wy = wy_start;
-                 wy <= wy_end;
+            for (wy = y - radius;
+                 wy <= y + radius;
                  wy++) {
 
-                for (wx = wx_start;
-                     wx <= wx_end;
+                int center_y = reflectIndex(wy, rows);
+
+                for (wx = x - radius;
+                     wx <= x + radius;
                      wx++) {
 
+                    int center_x = reflectIndex(wx, cols);
                     uint32_t sum = 0;
                     uint32_t sum_sq = 0;
                     uint32_t count = 0;
 
 
                     /*
-                     * Limites da janela centrada em
-                     * (wy,wx).
-                     *
-                     * Nas bordas, a janela é truncada,
-                     * da mesma maneira que o boxfilter()
-                     * original.
+                     * Calcula sum(I) e sum(I²) na janela
+                     * centrada em (center_y, center_x).
+                     * Cada coordenada fora da imagem é
+                     * mapeada por reflexão.
                      */
-                    int y0 =
-                        clampInt(wy - radius, 0, rows - 1);
+                    for (dy = -radius;
+                         dy <= radius;
+                         dy++) {
 
-                    int y1 =
-                        clampInt(wy + radius, 0, rows - 1);
+                        int iy = reflectIndex(center_y + dy, rows);
 
-                    int x0 =
-                        clampInt(wx - radius, 0, cols - 1);
+                        for (dx = -radius;
+                             dx <= radius;
+                             dx++) {
 
-                    int x1 =
-                        clampInt(wx + radius, 0, cols - 1);
-
-
-                    /*
-                     * Calcula:
-                     *
-                     * sum(I)
-                     * sum(I²)
-                     *
-                     * para a janela.
-                     */
-                    for (iy = y0;
-                         iy <= y1;
-                         iy++) {
-
-                        for (ix = x0;
-                             ix <= x1;
-                             ix++) {
-
-                            uint8_t pixel =
-                                src[iy * cols + ix];
+                            int ix = reflectIndex(center_x + dx, cols);
+                            uint8_t pixel = src[iy * cols + ix];
 
                             sum += pixel;
 
@@ -159,8 +131,7 @@ int guidedFilterSelf(const uint8_t *src,
                     /*
                      * Variância local:
                      *
-                     * var(I) =
-                     * E(I²) - E(I)²
+                     * var(I) = E(I²) - E(I)²
                      */
                     double variance =
                         ((double)sum_sq / (double)count)
